@@ -83,11 +83,12 @@ function FSWatcher(_opts) {
   this.enableBinaryInterval = opts.binaryInterval !== opts.interval;
 
   this._isIgnored = (function(ignored) {
+    if (ignored instanceof RegExp) {
+      return function(string) {
+        return ignored.test(string);
+      };
+    }
     switch (toString.call(ignored)) {
-      case '[object RegExp]':
-        return function(string) {
-          return ignored.test(string);
-        };
       case '[object Function]':
         return ignored;
       default:
